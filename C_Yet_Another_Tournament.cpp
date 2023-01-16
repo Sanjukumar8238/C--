@@ -22,15 +22,22 @@ int main()
         ll n, m;
         cin >> n >> m;
         ll a[n], b[n];
+        unordered_map<ll, vector<ll>> mp;
         for (ll i = 0; i < n; i++)
         {
             cin >> a[i];
+            mp[a[i]].push_back(i);
             b[i] = a[i];
         }
         sort(b, b + n);
+        for (auto u : mp)
+        {
+            reverse(u.second.begin(), u.second.end());
+        }
 
         unordered_map<ll, bool> vis;
         ll sum = 0;
+        ll large = -1;
         ll cnt = 0;
         for (ll i = 0; i < n; i++)
         {
@@ -38,14 +45,17 @@ int main()
             {
                 sum += b[i];
                 cnt++;
-                for (ll j = n - 1; j >= 0; j--)
-                {
-                    if (a[j] == b[i] && vis[j] == false)
-                    {
-                        vis[j] = true;
-                        break;
-                    }
-                }
+                vis[mp[b[i]][0]] = true;
+                mp[b[i]].erase(mp[b[i]].begin());
+                // for (ll j = n - 1; j >= 0; j--)
+                // {
+                //     if (a[j] == b[i] && vis[j] == false)
+                //     {
+                //         vis[j] = true;
+                //         break;
+                //     }
+                // }
+                large = b[i];
             }
             else
             {
@@ -66,12 +76,17 @@ int main()
                 {
                     ans = i;
                 }
+                else if (large + (m - sum) >= a[n - i])
+                {
+                    ans = i;
+                }
                 else
                 {
                     ans = i + 1;
                 }
             }
         }
+
         if (cnt == 0)
         {
             ans = n + 1;
